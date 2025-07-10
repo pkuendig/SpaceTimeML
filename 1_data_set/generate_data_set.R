@@ -166,6 +166,10 @@ orig_data$original_value = orig_data$original_upb / orig_data$original_loan_to_v
 MORTGAGE30US <- read.csv("./data/MORTGAGE30US.csv", sep=",")
 MORTGAGE30US$DATE <- as.Date(MORTGAGE30US$DATE)
 
+#macroeconomic data mainly from the U.S. Bureau of Economic Analysis
+macro_data <- read.csv("./data/macro_data.csv", sep=";")
+cols_macro <- colnames(macro_data)[4:ncol(macro_data)]
+
 X <- data.frame()
 Y <- c()
 ID <- c()
@@ -215,6 +219,10 @@ for(i in 1:length(versioning_dates)){
   
   #to calculate portfolio-loss
   X_active$current_upb <- latest_perform$current_upb
+  
+  #macroeconomic variables
+  macro_previous_year <- macro_data[macro_data$year == (as.numeric(format(current_date, "%Y"))-1),]
+  X_active[,cols_macro] <- macro_previous_year[match(orig_data$property_state[i_orig_active], macro_previous_year$state_short), cols_macro]
   
   #remove active loan if latest perform entry is more than 6 months ago
   not_uptodate <- latest_perform$period < current_date %m-% months(6)

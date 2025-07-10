@@ -8,10 +8,9 @@ predictions <- vector("list", length(pred_cnames))
 names(predictions) <- pred_cnames
 
 par_cnames <- c("year", "model",
-                "GP_var", "GP_range_time", "GP_range_space",
-                "INIT_GP_var", "INIT_GP_range_time", "INIT_GP_range_space", 
+                "GP_var", "GP_range_space",
+                "INIT_GP_var", "INIT_GP_range_space", 
                 "final_neg_log_likelihood", "time_training")
-
 parameters <- as.data.frame(matrix(nrow=n_pred_years, ncol=length(par_cnames)))
 colnames(parameters) <- par_cnames
 
@@ -24,5 +23,5 @@ for(i in 1:n_pred_years){
   predictions[i] <- y_prediction
 }
 
-saveRDS(parameters, "./data/parameters_GPBoost.rds")
-saveRDS(predictions, "./data/prediction_GPBoost.rds")
+saveRDS(parameters, "./data/parameters_GPBoost_spatial.rds")
+saveRDS(predictions, "./data/prediction_GPBoost_spatial.rds")

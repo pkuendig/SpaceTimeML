@@ -115,7 +115,8 @@ yearly_data <- readRDS("./../1_data_set/data/data_window_2022.rds")
 X <- yearly_data$X
 Y <- yearly_data$Y
 
-models <- c("GPBoost",
+models <- c("GPBoost_spatio_temporal",
+            "GPBoost_spatial",
             "GPModel_spatio_temporal",
             "GPModel_spatial",
             "Logistic_regression") 

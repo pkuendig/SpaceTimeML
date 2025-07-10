@@ -19,12 +19,12 @@ cat("Index of parameter combination:", i_param, "\n")
 
 ################################################################################
 ##Hyperparameter combination
-source("./gpb.cv.R")
+source("./../gpb.cv.R")
 
 full_param_grid = list("learning_rate" = c(10,1,0.1),
-                        "min_data_in_leaf" = c(10,100,1000),
-                        "max_depth" = c(2,3,5,10),
-                        "lambda_l2" = c(0,1,10))
+                       "min_data_in_leaf" = c(10,100,1000),
+                       "max_depth" = c(2,3,5,10),
+                       "lambda_l2" = c(0,1,10))
 
 other_params <- list(num_leaves = 2^10)
 
@@ -39,15 +39,10 @@ cat("lambda_l2:", param_grid$lambda_l2, "\n")
 ################################################################################
 ##Data preparation
 
-vers_data <- readRDS(paste0("./../1_data_set/data/data_window_", val_year, ".rds"))
+vers_data <- readRDS(paste0("./../../1_data_set/data/data_window_", val_year, ".rds"))
 
 X <- vers_data$X
 Y <- vers_data$Y
-
-#Covariate: year of versioning
-X$year_versioning <- as.numeric(format(X$date_versioning, "%Y"))
-X$year_versioning[X$year_versioning == val_year] <- val_year - 1 #validation year = last train year
-X$year_versioning <- as.factor(X$year_versioning)  
 
 #Design matrix  
 X_design <- model.matrix(~.,X[,!(names(X) %in% c("current_upb", "date_versioning"))],)
@@ -56,7 +51,7 @@ if(nrow(X) != nrow(X_design)) stop("X and X_design do not have the same number o
 i_val <- as.numeric(format(X$date_versioning, "%Y")) == val_year
 
 #Train
-coords_train <- cbind(time = as.numeric(as.character(X$year_versioning[!i_val])),
+coords_train <- cbind(time = as.numeric(format(X$date_versioning[!i_val], "%Y")),
                       X[!i_val,c("X_centroid", "Y_centroid")])
 
 #Validation
@@ -80,8 +75,8 @@ colnames(param_comb) <- c("year", "model", "learning_rate", "min_data_in_leaf",
 
 gp_model <- GPModel(gp_coords = coords,
                     cov_function = "matern_space_time",
-                    cov_fct_shape=1.5,
-                    likelihood="bernoulli_logit",
+                    cov_fct_shape = 1.5,
+                    likelihood = "bernoulli_logit",
                     gp_approx = "vecchia",
                     vecchia_ordering = "time_random_space",
                     num_neighbors = 20L,
@@ -114,7 +109,7 @@ time_grid_search <- system.time({
                                                         eval ="auc")})[3]
 
 param_comb$year <- val_year
-param_comb$model <- "GPBoost"
+param_comb$model <- "GPBoost_spatio_temporal"
 param_comb$learning_rate <- opt_params_gpboost$best_params$learning_rate
 param_comb$min_data_in_leaf <- opt_params_gpboost$best_params$min_data_in_leaf
 param_comb$max_depth <- opt_params_gpboost$best_params$max_depth

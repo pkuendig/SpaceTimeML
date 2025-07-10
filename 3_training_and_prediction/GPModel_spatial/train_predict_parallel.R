@@ -21,18 +21,13 @@ par_cnames <- c("year", "model",
                 "GP_var", "GP_range_space",
                 "INIT_GP_var", "INIT_GP_range_space", 
                 "final_neg_log_likelihood", "num_optim_iter",
-                "time_training", paste0("beta_",0:41))
+                "time_training", paste0("beta_",0:29))
 parameters <- as.data.frame(matrix(nrow=1, ncol=length(par_cnames)))
 colnames(parameters) <- par_cnames
 
 vers_data <- readRDS(paste0("./../../1_data_set/data/data_window_", pred_year, ".rds"))
 X <- vers_data$X
 Y <- vers_data$Y
-
-#Covariate: year of versioning
-X$year_versioning <- as.numeric(format(X$date_versioning, "%Y"))
-X$year_versioning[X$year_versioning == pred_year] <- pred_year - 1 #test year = last train year
-X$year_versioning <- as.factor(X$year_versioning)  
 
 #Design matrix
 X_design <- model.matrix(~.,X[,!(names(X) %in% c("current_upb", "date_versioning"))],)
@@ -59,14 +54,14 @@ cat("# test points: ", length(Y_test), "\n")
 gp_model <- GPModel(gp_coords = coords_train,
                     cov_function = "matern",
                     cov_fct_shape = 1.5,
-                    likelihood="bernoulli_logit",
+                    likelihood = "bernoulli_logit",
                     gp_approx = "vecchia",
                     vecchia_ordering = "random",
                     num_neighbors = 20L,
                     matrix_inversion_method = "iterative")
 
 gp_model$set_prediction_data(vecchia_pred_type = "latent_order_obs_first_cond_obs_only",
-                             num_neighbors_pred=20L)
+                             num_neighbors_pred = 20L)
 
 parameters$time_training[1] <- system.time(gp_model$fit(y=Y_train, X=X_train))[3]
 betas <- gp_model$get_coef()

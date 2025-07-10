@@ -1,5 +1,5 @@
-require(lubridate)
-require(gpboost)
+library(lubridate)
+library(gpboost)
 library(stringr)
 
 ################################################################################
@@ -14,7 +14,7 @@ predictions <- vector("list", length(pred_cnames))
 names(predictions) <- pred_cnames
 
 par_cnames <- c("year", "model",
-                "time_training", paste0("beta_",0:41))
+                "time_training", paste0("beta_",0:29))
 parameters <- as.data.frame(matrix(nrow=n_pred_years, ncol=length(par_cnames)))
 colnames(parameters) <- par_cnames
 
@@ -25,11 +25,6 @@ for(y in 1:n_pred_years){
   vers_data <- readRDS(paste0("./../../1_data_set/data/data_window_", pred_years[y], ".rds"))
   X <- vers_data$X
   Y <- vers_data$Y
-  
-  #Covariate: year of versioning
-  X$year_versioning <- as.numeric(format(X$date_versioning, "%Y"))
-  X$year_versioning[X$year_versioning == pred_years[y]] <- pred_years[y] - 1 #test year = last train year
-  X$year_versioning <- as.factor(X$year_versioning)  
   
   #Design matrix
   X_design <- model.matrix(~.,X[,!(names(X) %in% c("current_upb", "date_versioning"))],)
