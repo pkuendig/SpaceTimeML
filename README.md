@@ -3,7 +3,7 @@
 This repository contains the R code to generate the data set and run the mortgage credit risk application in the paper "A Spatio-Temporal Machine Learning Model for Mortgage Credit Risk: Default Probabilities and Loan Portfolios". 
 The linear spatial, linear spatio-temporal, tree-boosted spatial, and tree-boosted spatio-temporal frailty models are implemented in the GPBoost package, see <https://github.com/fabsig/GPBoost>. 
 
-The code is generally structured so that the calculations for the various validation, training and prediction years, as well as the different hyperparameter combinations in steps 2 and 3, can be run in parallel in different batch jobs on a computing environment.
+The code is generally structured so that calculations for the different (validation, training, and prediction) years and the different hyperparameter combinations can be run in parallel in different batch jobs on a computing environment.
 
 ## Step 1: Generating the data set
 
@@ -29,7 +29,7 @@ To conduct hyperparameter tuning for the tree-boosted spatial and spatio-tempora
 
 ## Step 3: Training and prediction
 
-To conduct training and prediction for the different years with the linear independent (`root\3_training_and_prediction\Logistic_regression`),  linear spatial (`root\3_training_and_prediction\GPModel_spatial`), linear spatio-temporal (`root\3_training_and_prediction\GPModel_spatio_temporal`), tree-boosted spatial (`root\3_training_and_prediction\GPBoost_spatial`), and tree-boosted spatio-temporal frailty (`root\3_training_and_prediction\GPBoost_spatio_temporal`) models proceed as follows:
+To conduct training and prediction for the different years with the linear independent (`root\3_training_and_prediction\Logistic_regression`),  linear spatial (`root\3_training_and_prediction\GPModel_spatial`), linear spatio-temporal (`root\3_training_and_prediction\GPModel_spatio_temporal`), tree-boosted spatial (`root\3_training_and_prediction\GPBoost_spatial`), and tree-boosted spatio-temporal (`root\3_training_and_prediction\GPBoost_spatio_temporal`) models proceed as follows:
 
 1. Navigate to the desired model directory and create a subfolder called `data`.
 
